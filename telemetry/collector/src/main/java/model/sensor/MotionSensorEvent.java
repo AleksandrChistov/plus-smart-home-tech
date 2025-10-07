@@ -5,6 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import model.sensor.enums.SensorEventType;
 
+/**
+ * Событие датчика движения, содержашее информацию о качестве связи, наличие/отсутствие движения и напряжении.
+ */
 @Getter
 @Setter
 @ToString(callSuper = true)

@@ -5,6 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import model.sensor.enums.SensorEventType;
 
+/**
+ * Событие датчика переключателя, содержащее информацию о текущем состоянии переключателя.
+ */
 @Getter
 @Setter
 @ToString(callSuper = true)

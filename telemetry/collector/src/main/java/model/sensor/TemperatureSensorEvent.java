@@ -5,6 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import model.sensor.enums.SensorEventType;
 
+/**
+ * Событие датчика температуры, содержащее информацию о температуре в градусах Цельсия и Фаренгейта.
+ */
 @Getter
 @Setter
 @ToString(callSuper = true)

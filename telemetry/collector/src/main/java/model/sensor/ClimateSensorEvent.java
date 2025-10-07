@@ -5,6 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import model.sensor.enums.SensorEventType;
 
+/**
+ * Событие климатического датчика, содержащее информацию о температуре, влажности и уровне CO2.
+ */
 @Getter
 @Setter
 @ToString(callSuper = true)

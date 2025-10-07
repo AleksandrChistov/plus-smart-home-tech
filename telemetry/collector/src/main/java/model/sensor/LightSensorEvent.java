@@ -5,6 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import model.sensor.enums.SensorEventType;
 
+/**
+ * Событие датчика освещенности, содержащее информацию о качестве связи и уровне освещенности.
+ */
 @Getter
 @Setter
 @ToString(callSuper = true)
