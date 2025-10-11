@@ -17,8 +17,8 @@ import java.util.Set;
 public class ScenarioAddedEvent extends HubEvent {
     @Size(min = 3)
     private String name;
-    private Set<ScenarioCondition> conditions;
-    private Set<DeviceAction> actions;
+    private Set<ScenarioCondition> conditions = Set.of();
+    private Set<DeviceAction> actions = Set.of();
 
     @Override
     public HubEventType getType() {

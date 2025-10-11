@@ -1,5 +1,6 @@
 package model.sensor;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import model.sensor.enums.SensorEventType;
 @Setter
 @ToString(callSuper = true)
 public class SwitchSensorEvent extends SensorEvent {
+    @NotNull
     private boolean state;
 
     @Override

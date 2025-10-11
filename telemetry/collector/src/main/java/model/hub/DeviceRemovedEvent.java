@@ -1,5 +1,6 @@
 package model.hub;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +13,8 @@ import model.hub.enums.HubEventType;
 @Setter
 @ToString(callSuper = true)
 public class DeviceRemovedEvent extends HubEvent {
-    private int id;
+    @NotBlank
+    private String id;
 
     @Override
     public HubEventType getType() {

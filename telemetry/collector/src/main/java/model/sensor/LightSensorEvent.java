@@ -1,5 +1,6 @@
 package model.sensor;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +13,9 @@ import model.sensor.enums.SensorEventType;
 @Setter
 @ToString(callSuper = true)
 public class LightSensorEvent extends SensorEvent {
+    @NotNull
     private int linkQuality;
+    @NotNull
     private int luminosity;
 
     @Override
