@@ -1,34 +1,35 @@
 package ru.yandex.practicum.telemetry.collector.service.mapper.hub;
 
-import ru.yandex.practicum.telemetry.collector.model.hub.DeviceAddedEvent;
-import ru.yandex.practicum.telemetry.collector.model.hub.HubEvent;
-import ru.yandex.practicum.telemetry.collector.model.hub.enums.HubEventType;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.grpc.telemetry.event.DeviceAddedEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 
+import java.time.Instant;
+
 @Component
 public class DeviceAddedEventMapper implements HubEventMapper {
 
-    public HubEventAvro map(HubEvent hubEvent) {
-        DeviceAddedEvent event = (DeviceAddedEvent) hubEvent;
+    public HubEventAvro map(HubEventProto event) {
+        DeviceAddedEventProto deviceAddedEvent = event.getDeviceAdded();
 
         DeviceAddedEventAvro deviceAddedEventAvro = DeviceAddedEventAvro.newBuilder()
-                .setId(event.getId())
-                .setType(DeviceTypeAvro.valueOf(event.getDeviceType().name()))
+                .setId(deviceAddedEvent.getId())
+                .setType(DeviceTypeAvro.valueOf(deviceAddedEvent.getType().name()))
                 .build();
 
         return HubEventAvro.newBuilder()
                 .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp())
+                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
                 .setPayload(deviceAddedEventAvro)
                 .build();
     }
 
     @Override
-    public HubEventType getMessageType() {
-        return HubEventType.DEVICE_ADDED;
+    public HubEventProto.PayloadCase getMessageType() {
+        return HubEventProto.PayloadCase.DEVICE_ADDED;
     }
 
 }
