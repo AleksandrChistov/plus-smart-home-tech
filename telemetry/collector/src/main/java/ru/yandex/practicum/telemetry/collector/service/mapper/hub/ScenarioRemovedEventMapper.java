@@ -1,32 +1,33 @@
 package ru.yandex.practicum.telemetry.collector.service.mapper.hub;
 
-import ru.yandex.practicum.telemetry.collector.model.hub.HubEvent;
-import ru.yandex.practicum.telemetry.collector.model.hub.ScenarioRemovedEvent;
-import ru.yandex.practicum.telemetry.collector.model.hub.enums.HubEventType;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.ScenarioRemovedEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro;
+
+import java.time.Instant;
 
 @Component
 public class ScenarioRemovedEventMapper implements HubEventMapper {
 
-    public HubEventAvro map(HubEvent hubEvent) {
-        ScenarioRemovedEvent event = (ScenarioRemovedEvent) hubEvent;
+    public HubEventAvro map(HubEventProto event) {
+        ScenarioRemovedEventProto scenarioRemovedEvent = event.getScenarioRemoved();
 
         ScenarioRemovedEventAvro scenarioRemovedEventAvro = ScenarioRemovedEventAvro.newBuilder()
-                .setName(event.getName())
+                .setName(scenarioRemovedEvent.getName())
                 .build();
 
         return HubEventAvro.newBuilder()
                 .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp())
+                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
                 .setPayload(scenarioRemovedEventAvro)
                 .build();
     }
 
     @Override
-    public HubEventType getMessageType() {
-        return HubEventType.SCENARIO_REMOVED;
+    public HubEventProto.PayloadCase getMessageType() {
+        return HubEventProto.PayloadCase.SCENARIO_REMOVED;
     }
 
 }
