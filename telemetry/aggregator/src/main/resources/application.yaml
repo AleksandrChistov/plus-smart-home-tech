@@ -1,0 +1,16 @@
+org:
+  slf4j:
+  simpleLogger:
+    logFile: System.out
+    defaultLogLevel: debug
+    showShortLogName: true
+    log:
+      org:
+        apache:
+          kafka: warn
+telemetry:
+  collector:
+    kafka:
+      server: localhost:9092
+      sensor:
+        topic: telemetry.sensors.v1
