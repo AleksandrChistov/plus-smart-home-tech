@@ -1,3 +1,8 @@
+spring:
+  application:
+    name: aggregator
+server:
+  port: 8080
 org:
   slf4j:
   simpleLogger:
@@ -9,8 +14,12 @@ org:
         apache:
           kafka: warn
 telemetry:
-  collector:
+  aggregator:
     kafka:
       server: localhost:9092
       sensor:
         topic: telemetry.sensors.v1
+        consumer:
+          groupId: aggregator-client
+      snapshot:
+        topic: telemetry.snapshots.v1
