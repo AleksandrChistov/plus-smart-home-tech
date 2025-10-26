@@ -29,10 +29,22 @@ org:
 telemetry:
   analyzer:
     kafka:
-      server: localhost:9092
-      hub:
-        topic: telemetry.hubs.v1
-      sensor:
-        topic: telemetry.sensors.v1
-      snapshot:
-        topic: telemetry.snapshots.v1
+      properties:
+        bootstrap.servers: localhost:9092
+        key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        enable.auto.commit: false
+      consumers:
+        - type: SnapshotProcessor
+          properties:
+            value.deserializer: org.apache.kafka.common.serialization.SensorsSnapshotDeserializer
+            group.id: telemetry.analyzer.snapshot
+          topics:
+            - telemetry.snapshots.v1
+          poll-timeout: 500
+        - type: HubEventProcessor
+          properties:
+            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            group.id: telemetry.analyzer.hub
+          topics:
+              - telemetry.hubs.v1
+          poll-timeout: 2000
