@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: analyzer
+server:
+  port: 8081
+org:
+  slf4j:
+  simpleLogger:
+    logFile: System.out
+    defaultLogLevel: debug
+    showShortLogName: true
+    log:
+      org:
+        apache:
+          kafka: warn
+telemetry:
+  analyzer:
+    kafka:
+      server: localhost:9092
+      hub:
+        topic: telemetry.hubs.v1
+      sensor:
+        topic: telemetry.sensors.v1
+      snapshot:
+        topic: telemetry.snapshots.v1
