@@ -36,7 +36,7 @@ protocol HubEventProtocol {
 		string sensor_id;
 		ConditionTypeAvro type; // тип условия для сценариев
 		ConditionOperationAvro operation; // оператор для построения условия
-		union { null, int, boolean } value = null;
+		int? value = null; // если bool, то 1 или 0
 	}
 
 	enum ActionTypeAvro {

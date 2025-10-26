@@ -58,10 +58,7 @@ message ScenarioConditionProto {
   string sensor_id = 1;
   ConditionTypeProto type = 2;
   ConditionOperationProto operation = 3;
-  oneof value {
-    bool bool_value = 4;
-    int32 int_value = 5;
-  }
+  optional int32 value = 4; // если bool, то 1 или 0
 }
 
 enum ActionTypeProto {
