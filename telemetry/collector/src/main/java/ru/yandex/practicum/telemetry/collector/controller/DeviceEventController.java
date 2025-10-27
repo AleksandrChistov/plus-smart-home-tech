@@ -52,12 +52,14 @@ public class DeviceEventController extends CollectorControllerGrpc.CollectorCont
     @Override
     public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
         try  {
-            log.info("HubEvent JSON: {}", request.toString());
+            log.info("Получен HubEvent JSON: {}", request.toString());
 
             HubEventMapper hubEventMapper = Optional.of(hubEventMappers.get(request.getPayloadCase()))
                     .orElseThrow(() -> new IllegalArgumentException("Неизвестный тип события для хаба"));
 
             HubEventAvro hubEventAvro = hubEventMapper.map(request);
+
+            log.info("Отправляем HubEvent Avro: {}", hubEventAvro.toString());
 
             kafkaProducer.send(HUB_TOPIC, hubEventAvro.getTimestamp().toEpochMilli(), hubEventAvro.getHubId(), hubEventAvro);
 
@@ -76,12 +78,14 @@ public class DeviceEventController extends CollectorControllerGrpc.CollectorCont
     @Override
     public void collectSensorEvent(SensorEventProto request, StreamObserver<Empty> responseObserver) {
         try  {
-            log.info("SensorEvent JSON: {}", request.toString());
+            log.info("Получен SensorEvent JSON: {}", request.toString());
 
             SensorEventMapper sensorEventMapper = Optional.of(sensorEventMappers.get(request.getPayloadCase()))
                     .orElseThrow(() -> new IllegalArgumentException("Неизвестный тип события для датчика"));
 
             SensorEventAvro sensorEventAvro = sensorEventMapper.map(request);
+
+            log.info("Отправляем SensorEvent Avro: {}", sensorEventAvro.toString());
 
             kafkaProducer.send(SENSOR_TOPIC, sensorEventAvro.getTimestamp().toEpochMilli(), sensorEventAvro.getHubId(), sensorEventAvro);
 
