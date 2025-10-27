@@ -11,10 +11,10 @@ message HubEventProto {
   string hub_id = 1; // идентификатор хаба
   google.protobuf.Timestamp timestamp = 2; // таймстемп события
   oneof payload { // содержимое конкретного события
-      DeviceAddedEventProto device_added = 3; // данные события добавления устройства
-      DeviceRemovedEventProto device_removed = 4; // данные события удаления устройства
-      ScenarioAddedEventProto scenario_added = 5; // данные события добавления нового сценария
-      ScenarioRemovedEventProto scenario_removed = 6; // данные события удаления сценария
+    DeviceAddedEventProto device_added = 3; // данные события добавления устройства
+    DeviceRemovedEventProto device_removed = 4; // данные события удаления устройства
+    ScenarioAddedEventProto scenario_added = 5; // данные события добавления нового сценария
+    ScenarioRemovedEventProto scenario_removed = 6; // данные события удаления сценария
   }
 }
 
@@ -58,7 +58,10 @@ message ScenarioConditionProto {
   string sensor_id = 1;
   ConditionTypeProto type = 2;
   ConditionOperationProto operation = 3;
-  optional int32 value = 4; // если bool, то 1 или 0
+  oneof value {
+    bool bool_value = 4;
+    int32 int_value = 5;
+  }
 }
 
 enum ActionTypeProto {
@@ -82,4 +85,12 @@ message ScenarioAddedEventProto {
 
 message ScenarioRemovedEventProto {
   string name = 1; // название сценария, уникальное в рамках хаба
+}
+
+// запрос на выполнение действий
+message DeviceActionRequest {
+  string hub_id = 1;
+  string scenario_name = 2;
+  DeviceActionProto action = 3;
+  google.protobuf.Timestamp timestamp = 4;
 }
