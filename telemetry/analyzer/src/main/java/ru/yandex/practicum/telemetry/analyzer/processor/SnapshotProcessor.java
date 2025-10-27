@@ -80,9 +80,7 @@ public class SnapshotProcessor {
                             .toList();
 
 
-                    deviceActionRequests.forEach(actionRequest -> {
-                        sendRequest(actionRequest, snapshot.getHubId());
-                    });
+                    deviceActionRequests.forEach(actionRequest -> sendRequest(actionRequest, snapshot.getHubId()));
 
                     // at-least-once семантика
                     log.debug("Асинхронно фиксируем смещения обработанных сообщений");
