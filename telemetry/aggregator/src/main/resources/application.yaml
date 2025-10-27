@@ -20,6 +20,8 @@ telemetry:
       sensor:
         topic: telemetry.sensors.v1
         consumer:
-          groupId: aggregator-client
+          groupId: telemetry.aggregator.sensors
+          enable.auto.commit: false
+          auto.offset.reset: earliest
       snapshot:
         topic: telemetry.snapshots.v1
