@@ -1,4 +1,4 @@
-package ru.yandex.practicum.telemetry.analyzer.dal.config;
+package ru.yandex.practicum.telemetry.analyzer.config;
 
 import lombok.Getter;
 import lombok.Setter;
