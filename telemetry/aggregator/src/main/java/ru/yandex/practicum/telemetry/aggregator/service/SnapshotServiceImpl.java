@@ -17,11 +17,13 @@ public class SnapshotServiceImpl implements SnapshotService {
 
     @Override
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
+        Instant eventTimestamp = event.getTimestamp();
+
         SensorsSnapshotAvro snapshot = snapshots.computeIfAbsent(
                 event.getHubId(),
                 hubId -> SensorsSnapshotAvro.newBuilder()
                         .setHubId(hubId)
-                        .setTimestamp(Instant.now())
+                        .setTimestamp(eventTimestamp)
                         .setSensorState(new HashMap<>())
                         .build()
         );
@@ -31,21 +33,19 @@ public class SnapshotServiceImpl implements SnapshotService {
         if (sensorsState.containsKey(event.getId())) {
             SensorStateAvro oldState = sensorsState.get(event.getId());
 
-            if (oldState.getTimestamp().isAfter(event.getTimestamp()) || !isSnapshotChanged(oldState.getData(), event.getPayload())) {
+            if (oldState.getTimestamp().isAfter(eventTimestamp) || !isSnapshotChanged(oldState.getData(), event.getPayload())) {
                 log.debug("Событие не изменилось");
                 return Optional.empty();
             } else {
                 sensorsState.put(event.getId(), createNewState(event));
-                snapshot.setSensorState(sensorsState);
-                snapshot.setTimestamp(Instant.now());
+                snapshot.setTimestamp(eventTimestamp);
 
                 log.debug("Снапшот был обновлен");
                 return Optional.of(snapshot);
             }
         } else {
             sensorsState.put(event.getId(), createNewState(event));
-            snapshot.setSensorState(sensorsState);
-            snapshot.setTimestamp(Instant.now());
+            snapshot.setTimestamp(eventTimestamp);
 
             log.debug("Снапшот был обновлен");
             return Optional.of(snapshot);
