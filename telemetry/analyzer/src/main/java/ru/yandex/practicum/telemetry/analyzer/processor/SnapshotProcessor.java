@@ -8,6 +8,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionRequest;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
@@ -37,41 +39,46 @@ public class SnapshotProcessor {
 
     private final int BATCH_SIZE = 50;
 
+    @EventListener(ApplicationReadyEvent.class)
     public void process() {
-        final Consumer<String, SensorsSnapshotAvro> consumer = kafkaFactory.createConsumer(SnapshotProcessor.class.getSimpleName());
-        final Duration pollTimeout = Duration.ofMillis(kafkaFactory.getPollTimeout(SnapshotProcessor.class.getSimpleName()));
-
         try {
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                log.info("Получен сигнал на завершение работы в {}", SnapshotProcessor.class.getSimpleName());
-                consumer.wakeup();
-            }));
+            final Consumer<String, SensorsSnapshotAvro> consumer = kafkaFactory.createConsumer(SnapshotProcessor.class.getSimpleName());
+            final Duration pollTimeout = Duration.ofMillis(kafkaFactory.getPollTimeout(SnapshotProcessor.class.getSimpleName()));
 
-            consumer.subscribe(kafkaFactory.getTopics(SnapshotProcessor.class.getSimpleName()));
-
-            while (true) {
-                ConsumerRecords<String, SensorsSnapshotAvro> records = consumer.poll(pollTimeout);
-                int count = 0;
-
-                for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
-                    handleRecord(record);
-                    manageOffsets(consumer, record, count);
-                    count++;
-                }
-                // фиксируем максимальный оффсет обработанных записей
-                consumer.commitAsync();
-            }
-        } catch (WakeupException ignored) {
-            log.error("Получен WakeupException");
-        } catch (Exception e) {
-            log.error("Ошибка во время обработки событий датчиков", e);
-        } finally {
             try {
-                log.debug("Фиксация смещений");
-                consumer.commitSync();
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                    log.info("Получен сигнал на завершение работы в {}", SnapshotProcessor.class.getSimpleName());
+                    consumer.wakeup();
+                }));
+
+                consumer.subscribe(kafkaFactory.getTopics(SnapshotProcessor.class.getSimpleName()));
+
+                while (true) {
+                    ConsumerRecords<String, SensorsSnapshotAvro> records = consumer.poll(pollTimeout);
+                    int count = 0;
+
+                    for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
+                        handleRecord(record);
+                        manageOffsets(consumer, record, count);
+                        count++;
+                    }
+                    // фиксируем максимальный оффсет обработанных записей
+                    consumer.commitAsync();
+                }
+            } catch (WakeupException ignored) {
+                log.error("Получен WakeupException");
+            } catch (Exception e) {
+                log.error("Ошибка во время обработки событий датчиков", e);
             } finally {
-                consumer.close();
+                try {
+                    log.debug("Фиксация смещений");
+                    consumer.commitSync();
+                } finally {
+                    consumer.close();
+                }
             }
+        } catch (Exception e) {
+            log.error("Ошибка создания консьюмера в {}", SnapshotProcessor.class.getSimpleName(), e);
         }
     }
 
