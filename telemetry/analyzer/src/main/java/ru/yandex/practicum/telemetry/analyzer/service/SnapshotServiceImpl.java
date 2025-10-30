@@ -99,7 +99,6 @@ public class SnapshotServiceImpl implements SnapshotService {
             }
         } catch (StatusRuntimeException e) {
             log.error("Отправка действия {} на hubId {} завершилась ошибкой {}", request.getAction(), hubId, e.getMessage());
-            throw new RuntimeException("Отправка действия " + request.getAction() + "на hubId " + hubId + " завершилась ошибкой", e);
         }
     }
 

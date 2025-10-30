@@ -93,7 +93,9 @@ public class SnapshotProcessor {
                 .toList();
 
 
-        deviceActionRequests.forEach(actionRequest -> snapshotService.sendRequest(actionRequest, snapshot.getHubId()));
+        deviceActionRequests.forEach(actionRequest ->
+                snapshotService.sendRequest(actionRequest, snapshot.getHubId())
+        );
     }
 
     private void manageOffsets(
