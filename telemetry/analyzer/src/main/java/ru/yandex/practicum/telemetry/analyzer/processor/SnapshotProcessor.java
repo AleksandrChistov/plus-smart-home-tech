@@ -39,7 +39,7 @@ public class SnapshotProcessor {
 
     public void process() {
         final Consumer<String, SensorsSnapshotAvro> consumer = kafkaFactory.createConsumer(SnapshotProcessor.class.getSimpleName());
-        final Duration pollTimeout = Duration.ofSeconds(kafkaFactory.getPollTimeout(SnapshotProcessor.class.getSimpleName()));
+        final Duration pollTimeout = Duration.ofMillis(kafkaFactory.getPollTimeout(SnapshotProcessor.class.getSimpleName()));
 
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
