@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.kafka.telemetry.event.*;
@@ -13,6 +15,8 @@ import ru.yandex.practicum.telemetry.analyzer.service.interfaces.ScenarioService
 import ru.yandex.practicum.telemetry.analyzer.service.interfaces.SensorService;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +29,12 @@ public class HubEventProcessor implements Runnable {
 
     private final ScenarioService scenarioService;
 
+    private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
+
     @Override
     public void run() {
         final Consumer<String, HubEventAvro> consumer = kafkaFactory.createConsumer(HubEventProcessor.class.getSimpleName());
+        final Duration pollTimeout = Duration.ofMillis(kafkaFactory.getPollTimeout(HubEventProcessor.class.getSimpleName()));
 
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -37,43 +44,21 @@ public class HubEventProcessor implements Runnable {
 
             consumer.subscribe(kafkaFactory.getTopics(HubEventProcessor.class.getSimpleName()));
 
-            while(true) {
-                Long pollTimeout = kafkaFactory.getPollTimeout(HubEventProcessor.class.getSimpleName());
-
-                ConsumerRecords<String, HubEventAvro> records = consumer.poll(Duration.ofMillis(pollTimeout));
+            while (true) {
+                ConsumerRecords<String, HubEventAvro> records = consumer.poll(pollTimeout);
 
                 for (ConsumerRecord<String, HubEventAvro> record : records) {
-                    HubEventAvro event = record.value();
-
-                    log.info("Получено событие от устройства: {}", event.toString());
-
-                    Object payload = event.getPayload();
-
-                    switch (payload) {
-                        case DeviceAddedEventAvro deviceAddedEvent -> {
-                            log.info("Сохраняем новое устройство: {}", deviceAddedEvent);
-                            sensorService.add(deviceAddedEvent.getId(), event.getHubId());
-                        }
-                        case DeviceRemovedEventAvro deviceRemovedEvent -> {
-                            log.info("Удаляем устройство: {}", deviceRemovedEvent);
-                            sensorService.delete(deviceRemovedEvent.getId(), event.getHubId());
-                        }
-                        case ScenarioAddedEventAvro scenarioAddedEvent -> {
-                            log.info("Добавляем новый сценарий: {}", scenarioAddedEvent);
-                            scenarioService.add(scenarioAddedEvent, event.getHubId());
-                        }
-                        case ScenarioRemovedEventAvro scenarioRemovedEvent -> {
-                            log.info("Удаляем сценарий: {}", scenarioRemovedEvent);
-                            scenarioService.delete(scenarioRemovedEvent, event.getHubId());
-                        }
-                        default -> throw new IllegalArgumentException("Неизвестный тип события");
-                    }
-
+                    handleRecord(record);
                     // at-least-once семантика
-                    log.debug("Асинхронно фиксируем смещения обработанных сообщений");
-                    consumer.commitAsync((offsets, exception) -> {
-                        if(exception != null) {
+                    currentOffsets.put(
+                            new TopicPartition(record.topic(), record.partition()),
+                            new OffsetAndMetadata(record.offset() + 1)
+                    );
+                    consumer.commitAsync(currentOffsets, (offsets, exception) -> {
+                        if (exception != null) {
                             log.warn("Во время фиксации произошла ошибка. Cмещения: {}", offsets, exception);
+                        } else {
+                            log.debug("Успешно зафиксированы смещения: {}", offsets);
                         }
                     });
                 }
@@ -84,11 +69,39 @@ public class HubEventProcessor implements Runnable {
             log.error("Ошибка во время обработки событий датчиков", e);
         } finally {
             try {
-                log.debug("Очистка буфера и фиксация смещений");
+                log.debug("Фиксация смещений");
                 consumer.commitSync();
             } finally {
                 consumer.close();
             }
+        }
+    }
+
+    private void handleRecord(ConsumerRecord<String, HubEventAvro> record) {
+        HubEventAvro event = record.value();
+
+        log.info("Получено событие от устройства: {}", event.toString());
+
+        Object payload = event.getPayload();
+
+        switch (payload) {
+            case DeviceAddedEventAvro deviceAddedEvent -> {
+                log.info("Сохраняем новое устройство: {}", deviceAddedEvent);
+                sensorService.add(deviceAddedEvent.getId(), event.getHubId());
+            }
+            case DeviceRemovedEventAvro deviceRemovedEvent -> {
+                log.info("Удаляем устройство: {}", deviceRemovedEvent);
+                sensorService.delete(deviceRemovedEvent.getId(), event.getHubId());
+            }
+            case ScenarioAddedEventAvro scenarioAddedEvent -> {
+                log.info("Добавляем новый сценарий: {}", scenarioAddedEvent);
+                scenarioService.add(scenarioAddedEvent, event.getHubId());
+            }
+            case ScenarioRemovedEventAvro scenarioRemovedEvent -> {
+                log.info("Удаляем сценарий: {}", scenarioRemovedEvent);
+                scenarioService.delete(scenarioRemovedEvent, event.getHubId());
+            }
+            default -> throw new IllegalArgumentException("Неизвестный тип события");
         }
     }
 
