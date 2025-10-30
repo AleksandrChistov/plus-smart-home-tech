@@ -35,9 +35,9 @@ public class AggregationStarter {
 
     private final SnapshotService snapshotService;
 
-    private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
-
     private final Duration POLL_TIMEOUT = Duration.ofSeconds(1);
+
+    private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
     private final int BATCH_SIZE = 200;
 
@@ -53,7 +53,7 @@ public class AggregationStarter {
 
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                log.info("Получен сигнал на завершение работы");
+                log.info("Получен сигнал на завершение работы в {}", AggregationStarter.class.getSimpleName());
                 consumer.wakeup();
             }));
 
