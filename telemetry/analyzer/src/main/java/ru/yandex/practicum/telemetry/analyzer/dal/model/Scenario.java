@@ -43,6 +43,7 @@ public class Scenario {
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "condition_id")
     )
+    @Builder.Default
     private Map<String, Condition> conditions = new HashMap<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -57,5 +58,6 @@ public class Scenario {
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id")
     )
+    @Builder.Default
     private Map<String, Action> actions = new HashMap<>();
 }

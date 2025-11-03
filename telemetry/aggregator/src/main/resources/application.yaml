@@ -1,27 +1,11 @@
 spring:
   application:
     name: aggregator
-server:
-  port: 8080
-org:
-  slf4j:
-  simpleLogger:
-    logFile: System.out
-    defaultLogLevel: debug
-    showShortLogName: true
-    log:
-      org:
-        apache:
-          kafka: warn
-telemetry:
-  aggregator:
-    kafka:
-      server: localhost:9092
-      sensor:
-        topic: telemetry.sensors.v1
-        consumer:
-          groupId: telemetry.aggregator.sensors
-          enable.auto.commit: false
-          auto.offset.reset: earliest
-      snapshot:
-        topic: telemetry.snapshots.v1
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000

@@ -1,21 +1,11 @@
-grpc:
-  server:
-    port: 59091
-org:
-  slf4j:
-  simpleLogger:
-    logFile: System.out
-    defaultLogLevel: debug
-    showShortLogName: true
-    log:
-      org:
-        apache:
-          kafka: warn
-telemetry:
-  collector:
-    kafka:
-      server: localhost:9092
-      hub:
-        topic: telemetry.hubs.v1
-      sensor:
-        topic: telemetry.sensors.v1
+spring:
+  application:
+    name: collector
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
