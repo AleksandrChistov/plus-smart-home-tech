@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   datasource:
     url: jdbc:postgresql://localhost:6541/telemetry
@@ -14,8 +16,6 @@ spring:
         jdbc.time_zone: UTC
     sql.init.mode: always
 
-server:
-  port: 8081
 org:
   slf4j:
   simpleLogger:
