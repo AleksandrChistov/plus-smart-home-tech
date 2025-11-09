@@ -40,7 +40,7 @@ services:
     environment:
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=12345
-      - POSTGRES_DB=telemetry
+      - POSTGRES_DB=telemetry_analyzer
     ports:
       - "6541:5432"
     healthcheck:
@@ -48,3 +48,24 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
+
+  db-init:
+    image: postgres:16.1
+    container_name: db-init
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - PGHOST=db
+      - PGUSER=dbuser
+      - PGPASSWORD=12345
+      - PGPORT=5432
+      - PGDATABASE=telemetry_analyzer
+    entrypoint:
+      - bash
+      - -c
+      - |
+        set -e 
+        psql -v ON_ERROR_STOP=1 <<-EOSQL || true
+        CREATE DATABASE commerce_shopping_store;
+        EOSQL
