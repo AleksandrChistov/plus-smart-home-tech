@@ -1,9 +1,9 @@
-package ru.yandex.practicum.api.shopping.cart.dto;
+package ru.yandex.practicum.api.shopping.store.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import ru.yandex.practicum.api.shopping.cart.enums.QuantityState;
+import ru.yandex.practicum.api.shopping.store.enums.QuantityState;
 
 @Getter
 @Setter

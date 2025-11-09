@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
-import ru.yandex.practicum.api.shopping.cart.enums.ProductCategory;
-import ru.yandex.practicum.api.shopping.cart.enums.ProductState;
-import ru.yandex.practicum.api.shopping.cart.enums.QuantityState;
+import ru.yandex.practicum.api.shopping.store.enums.ProductCategory;
+import ru.yandex.practicum.api.shopping.store.enums.ProductState;
+import ru.yandex.practicum.api.shopping.store.enums.QuantityState;
 
 import java.math.BigDecimal;
 
