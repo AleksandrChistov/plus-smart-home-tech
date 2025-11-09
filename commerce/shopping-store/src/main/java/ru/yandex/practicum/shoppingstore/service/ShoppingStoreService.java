@@ -1,10 +1,10 @@
 package ru.yandex.practicum.shoppingstore.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.yandex.practicum.api.shopping.cart.dto.ProductDto;
-import ru.yandex.practicum.api.shopping.cart.dto.ProductRemoveRequestDto;
-import ru.yandex.practicum.api.shopping.cart.dto.SetProductQuantityStateRequestDto;
-import ru.yandex.practicum.api.shopping.cart.enums.ProductCategory;
+import ru.yandex.practicum.api.shopping.store.dto.ProductDto;
+import ru.yandex.practicum.api.shopping.store.dto.ProductRemoveRequestDto;
+import ru.yandex.practicum.api.shopping.store.dto.SetProductQuantityStateRequestDto;
+import ru.yandex.practicum.api.shopping.store.enums.ProductCategory;
 
 import java.util.List;
 

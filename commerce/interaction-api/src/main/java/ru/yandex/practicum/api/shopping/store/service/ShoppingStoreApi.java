@@ -1,4 +1,4 @@
-package ru.yandex.practicum.api.shopping.cart.service;
+package ru.yandex.practicum.api.shopping.store.service;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -7,12 +7,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.api.shopping.cart.dto.*;
-import ru.yandex.practicum.api.shopping.cart.enums.ProductCategory;
+import ru.yandex.practicum.api.shopping.store.dto.*;
+import ru.yandex.practicum.api.shopping.store.enums.ProductCategory;
 
 import java.util.List;
 
-import static ru.yandex.practicum.api.shopping.cart.service.ShoppingStoreApi.URL;
+import static ru.yandex.practicum.api.shopping.store.service.ShoppingStoreApi.URL;
 
 @RequestMapping(path = URL, consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface ShoppingStoreApi {

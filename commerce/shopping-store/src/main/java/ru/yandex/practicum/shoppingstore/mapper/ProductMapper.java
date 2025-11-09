@@ -1,7 +1,7 @@
 package ru.yandex.practicum.shoppingstore.mapper;
 
 import org.mapstruct.*;
-import ru.yandex.practicum.api.shopping.cart.dto.ProductDto;
+import ru.yandex.practicum.api.shopping.store.dto.ProductDto;
 import ru.yandex.practicum.shoppingstore.dal.model.Product;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

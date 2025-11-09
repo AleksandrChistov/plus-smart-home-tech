@@ -3,9 +3,9 @@ package ru.yandex.practicum.shoppingstore.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.api.shopping.cart.dto.*;
-import ru.yandex.practicum.api.shopping.cart.enums.ProductCategory;
-import ru.yandex.practicum.api.shopping.cart.service.ShoppingStoreApi;
+import ru.yandex.practicum.api.shopping.store.dto.*;
+import ru.yandex.practicum.api.shopping.store.enums.ProductCategory;
+import ru.yandex.practicum.api.shopping.store.service.ShoppingStoreApi;
 import ru.yandex.practicum.shoppingstore.service.ShoppingStoreService;
 
 import java.util.List;
