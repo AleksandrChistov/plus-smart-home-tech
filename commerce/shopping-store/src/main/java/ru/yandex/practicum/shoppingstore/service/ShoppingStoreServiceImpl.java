@@ -30,6 +30,8 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductDto> getProductsByCategory(ProductCategory category, Pageable pageable) {
+        log.info("Получение товаров по категории {} страницы {} и сортировкой {}",
+                category, pageable.getPageNumber(), pageable.getSort());
         return productRepository.findByProductCategory(category, pageable).stream()
                 .map(productMapper::toDto)
                 .toList();
@@ -38,6 +40,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Transactional(readOnly = true)
     public ProductDto getProductById(String productId) {
+        log.info("Получение товара по id = {}", productId);
         return productRepository.findById(productId)
                 .map(productMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Товар c id = " + productId +" не найден"));
@@ -54,6 +57,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Transactional
     public ProductDto updateProduct(ProductDto productDto) {
+        log.info("Обновление товара: {}", productDto);
         Product product = productRepository.findById(productDto.getProductId())
                 .orElseThrow(() -> new NotFoundException("Товар c id = " + productDto.getProductId() +" не найден"));
         productMapper.updateModel(productDto, product);
@@ -63,6 +67,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Transactional
     public boolean setProductQuantityState(SetProductQuantityStateRequestDto request) {
+        log.info("Изменение кол-ва товара: {}", request);
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new NotFoundException("Товар c id = " + request.getProductId() +" не найден"));
 
@@ -76,6 +81,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Transactional
     public boolean removeProductFromStore(ProductRemoveRequestDto request) {
+        log.info("Удаление товара c id = {}", request.getProductId());
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new NotFoundException("Товар c id = " + request.getProductId() +" не найден"));
 
