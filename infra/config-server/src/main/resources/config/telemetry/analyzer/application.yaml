@@ -1,8 +1,9 @@
 server:
   port: 8081
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:6541/telemetry
+    url: jdbc:postgresql://localhost:6541/telemetry_analyzer
     username: dbuser
     password: 12345
     driver-class-name: org.postgresql.Driver
