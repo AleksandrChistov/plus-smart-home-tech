@@ -9,7 +9,6 @@ import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.shopping.cart.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.api.shopping.cart.dto.ShoppingCartDto;
 import ru.yandex.practicum.api.shopping.cart.enums.ShoppingCartState;
-import ru.yandex.practicum.api.warehouse.service.WarehouseClient;
 import ru.yandex.practicum.shoppingcart.dal.dao.ShoppingCartRepository;
 import ru.yandex.practicum.shoppingcart.dal.model.ShoppingCart;
 import ru.yandex.practicum.shoppingcart.mapper.ShoppingCartMapper;

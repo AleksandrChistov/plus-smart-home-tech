@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
+import ru.yandex.practicum.api.warehouse.error.ServiceUnavailableException;
 
 import java.util.Optional;
 
@@ -58,6 +59,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleNotFoundException(final NotFoundException ex) {
         log.warn("404 {}", ex.getMessage());
         return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ResponseEntity<ApiError> handleServiceUnavailableException(final ServiceUnavailableException ex) {
+        log.error("503 {}", ex.getMessage(), ex);
+        return getResponseEntity(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), null);
     }
 
     @ExceptionHandler(Exception.class)

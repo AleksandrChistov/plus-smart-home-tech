@@ -16,3 +16,29 @@ spring:
         format_sql: true
         jdbc.time_zone: UTC
     sql.init.mode: always
+
+feign:
+  circuitbreaker:
+    enabled: true
+    implementation: resilience4j
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+    instances:
+      warehouse:
+        slidingWindowSize: 10
+        waitDurationInOpenState: 10000 # 10 секунд в миллисекундах
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
