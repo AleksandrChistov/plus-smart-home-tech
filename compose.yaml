@@ -69,4 +69,5 @@ services:
         psql -v ON_ERROR_STOP=1 <<-EOSQL || true
         CREATE DATABASE commerce_shopping_store;
         CREATE DATABASE commerce_shopping_cart;
+        CREATE DATABASE commerce_warehouse;
         EOSQL
