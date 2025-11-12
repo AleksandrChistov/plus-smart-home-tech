@@ -6,9 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.api.shared.error.NotFoundException;
-import ru.yandex.practicum.api.shopping.store.dto.ProductDto;
-import ru.yandex.practicum.api.shopping.store.dto.ProductRemoveRequestDto;
-import ru.yandex.practicum.api.shopping.store.dto.SetProductQuantityStateRequestDto;
+import ru.yandex.practicum.api.shopping.store.dto.*;
 import ru.yandex.practicum.api.shopping.store.enums.ProductCategory;
 import ru.yandex.practicum.api.shopping.store.enums.ProductState;
 import ru.yandex.practicum.shoppingstore.dal.dao.ProductRepository;
@@ -29,17 +27,24 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductDto> getProductsByCategory(ProductCategory category, Pageable pageable) {
+    public ProductDto getProductsByCategory(ProductCategory category, Pageable pageable) {
         log.info("Получение товаров по категории {} страницы {} и сортировкой {}",
                 category, pageable.getPageNumber(), pageable.getSort());
-        return productRepository.findByProductCategory(category, pageable).stream()
+
+        List<ProductContentDto> productDtos = productRepository.findByProductCategory(category, pageable).stream()
                 .map(productMapper::toDto)
                 .toList();
+
+        List<SortDto> sortDtos = pageable.getSort().stream()
+                .map(order -> new SortDto(order.getDirection().name(), order.getProperty()))
+                .toList();
+
+        return new ProductDto(productDtos, sortDtos);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ProductDto getProductById(String productId) {
+    public ProductContentDto getProductById(String productId) {
         log.info("Получение товара по id = {}", productId);
         return productRepository.findById(productId)
                 .map(productMapper::toDto)
@@ -48,7 +53,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Transactional
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductContentDto createProduct(ProductContentDto productDto) {
         log.info("Создание товара: {}", productDto);
         Product saved = productRepository.save(productMapper.toModel(productDto));
         return productMapper.toDto(saved);
@@ -56,7 +61,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Transactional
-    public ProductDto updateProduct(ProductDto productDto) {
+    public ProductContentDto updateProduct(ProductContentDto productDto) {
         log.info("Обновление товара: {}", productDto);
         Product product = productRepository.findById(productDto.getProductId())
                 .orElseThrow(() -> new NotFoundException("Товар c id = " + productDto.getProductId() +" не найден"));

@@ -66,7 +66,7 @@ public class WarehouseClientErrorDecoder implements ErrorDecoder {
                 }
             }
         } catch (IOException e) {
-            log.debug("Error parsing error response body", e);
+            log.debug("Сломался в WarehouseClientErrorDecoder на парсинге объекта response", e);
         }
         return null;
     }
