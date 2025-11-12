@@ -6,7 +6,7 @@ public class InsufficientStockError extends RuntimeException {
     public final List<InsufficientItemDto> insufficientItems;
 
     public InsufficientStockError(List<InsufficientItemDto> insufficientItems) {
-        super("В данным момент на складе нет требуемого количества товара");
+        super("В данный момент на складе нет требуемого количества товара");
         this.insufficientItems = insufficientItems;
     }
 }

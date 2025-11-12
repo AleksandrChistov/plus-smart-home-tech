@@ -12,28 +12,25 @@ import ru.yandex.practicum.api.warehouse.dto.NewProductInWarehouseRequest;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
 
-import static ru.yandex.practicum.api.warehouse.service.WarehouseApi.URL;
-
-@RequestMapping(path = URL, consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface WarehouseApi {
     String URL = "/api/v1/warehouse";
 
-    @PutMapping
+    @PutMapping(path = URL, consumes = MediaType.APPLICATION_JSON_VALUE)
     void addProduct(@RequestBody @Valid NewProductInWarehouseRequest newProductRequest) throws ProductAlreadyExistError;
 
     /**
      * Предварительно проверить что количество товаров на складе достаточно для данной корзины продуктов.
      */
-    @PostMapping("/check")
+    @PostMapping(path = URL + "/check", consumes = MediaType.APPLICATION_JSON_VALUE)
     BookedProductsDto checkProducts(@RequestBody @Valid ShoppingCartDto shoppingCartDto) throws InsufficientStockError;
 
-    @PostMapping("/add")
+    @PostMapping(path = URL + "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addQuantity(@RequestBody @Valid AddProductToWarehouseRequest addProductRequest) throws NotFoundException;
 
     /**
      * Предоставить адрес склада для расчёта доставки.
      */
-    @GetMapping("/address")
+    @GetMapping(path = URL + "/address", produces = MediaType.APPLICATION_JSON_VALUE)
     AddressDto getWarehouseAddress();
 
 }
