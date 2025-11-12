@@ -46,7 +46,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartDto addProducts(String username, Map<String, Integer> productQuantityMap) {
         log.info("Добавление товаров {} в корзину пользователем {}", productQuantityMap, username);
         ShoppingCart shoppingCart = shoppingCartRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Корзина для пользователя " + username + " не найдена"));
+                .orElseGet(() -> {
+                    ShoppingCart cart = new ShoppingCart();
+                    cart.setUsername(username);
+                    return shoppingCartRepository.saveAndFlush(cart);
+                });
 
         throwIfShoppingCartDeactivated(username, shoppingCart.getCartState());
 

@@ -10,16 +10,13 @@ import ru.yandex.practicum.api.shopping.cart.dto.ShoppingCartDto;
 import java.util.Map;
 import java.util.Set;
 
-import static ru.yandex.practicum.api.shopping.cart.service.ShoppingCartApi.URL;
-
-@RequestMapping(path = URL, consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface ShoppingCartApi {
     String URL = "/api/v1/shopping-cart";
 
-    @GetMapping
+    @GetMapping(path = URL, produces = MediaType.APPLICATION_JSON_VALUE)
     ShoppingCartDto getShoppingCartByUserName(@RequestParam @NotNull String username);
 
-    @PutMapping
+    @PutMapping(path = URL, consumes = MediaType.APPLICATION_JSON_VALUE)
     ShoppingCartDto addProducts(
             @RequestParam @NotNull String username,
             @RequestBody @Valid Map<String, Integer> productQuantityMap
@@ -28,16 +25,16 @@ public interface ShoppingCartApi {
     /**
     * Деактивация корзины товаров для пользователя.
      */
-    @DeleteMapping
+    @DeleteMapping(path = URL)
     void deactivate(@RequestParam @NotNull String username);
 
-    @PostMapping("/remove")
+    @PostMapping(path = URL + "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
     ShoppingCartDto removeProducts(
             @RequestParam @NotNull String username,
             @RequestBody @Valid Set<String> productsIds
     );
 
-    @PostMapping("/change-quantity")
+    @PostMapping(path = URL + "/change-quantity", consumes = MediaType.APPLICATION_JSON_VALUE)
     ShoppingCartDto changeQuantity(
             @RequestParam @NotNull String username,
             @RequestBody @Valid ChangeProductQuantityRequest request
