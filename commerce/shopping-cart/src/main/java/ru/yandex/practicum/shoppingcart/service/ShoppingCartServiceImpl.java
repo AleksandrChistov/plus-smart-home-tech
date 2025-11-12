@@ -1,14 +1,15 @@
 package ru.yandex.practicum.shoppingcart.service;
 
 import jakarta.annotation.Nullable;
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.shopping.cart.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.api.shopping.cart.dto.ShoppingCartDto;
 import ru.yandex.practicum.api.shopping.cart.enums.ShoppingCartState;
+import ru.yandex.practicum.api.warehouse.service.WarehouseClient;
 import ru.yandex.practicum.shoppingcart.dal.dao.ShoppingCartRepository;
 import ru.yandex.practicum.shoppingcart.dal.model.ShoppingCart;
 import ru.yandex.practicum.shoppingcart.mapper.ShoppingCartMapper;
@@ -25,6 +26,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
 
     private final ShoppingCartMapper shoppingCartMapper;
+
+    private final WarehouseClient warehouseClient;
     
     @Override
     public @Nullable ShoppingCartDto getShoppingCartByUserName(String username) {
@@ -48,6 +51,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         throwIfShoppingCartDeactivated(username, shoppingCart.getCartState());
 
         shoppingCartMapper.updateModel(productQuantityMap, shoppingCart);
+
+        warehouseClient.checkProducts(shoppingCartMapper.toDto(shoppingCart));
 
         shoppingCartRepository.save(shoppingCart);
 
@@ -94,6 +99,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
 
         shoppingCart.getProducts().put(request.getProductId(), request.getNewQuantity());
+
+        warehouseClient.checkProducts(shoppingCartMapper.toDto(shoppingCart));
 
         shoppingCartRepository.save(shoppingCart);
 
