@@ -4,8 +4,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:6541/telemetry_analyzer
-    username: postgres
-    password: password
+    username: dbuser
+    password: 12345
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

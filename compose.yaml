@@ -38,8 +38,8 @@ services:
     image: postgres:16.1
     container_name: postgres
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=12345
       - POSTGRES_DB=telemetry_analyzer
     ports:
       - "6541:5432"
@@ -57,8 +57,8 @@ services:
         condition: service_healthy
     environment:
       - PGHOST=db
-      - PGUSER=postgres
-      - PGPASSWORD=password
+      - PGUSER=dbuser
+      - PGPASSWORD=12345
       - PGPORT=5432
       - PGDATABASE=telemetry_analyzer
     entrypoint:
