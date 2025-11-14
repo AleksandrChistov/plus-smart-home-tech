@@ -29,6 +29,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final WarehouseClient warehouseClient;
     
     @Override
+    @Transactional(readOnly = true)
     public @Nullable ShoppingCartDto getShoppingCartByUserName(String username) {
         log.info("Получение корзины пользователя {}", username);
         return shoppingCartRepository.findByUsername(username)
