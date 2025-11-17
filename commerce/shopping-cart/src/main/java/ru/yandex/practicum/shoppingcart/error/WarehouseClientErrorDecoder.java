@@ -31,7 +31,7 @@ public class WarehouseClientErrorDecoder implements ErrorDecoder {
 
     @Override
     public Exception decode(String methodKey, Response response) {
-        log.debug("Method key: {}, response: {}", methodKey, response);
+        log.debug("Warehouse methodKey: {}, response: {}", methodKey, response);
 
         try {
             if (methodKey.contains("checkProducts") && response.status() == 400) {
@@ -55,7 +55,7 @@ public class WarehouseClientErrorDecoder implements ErrorDecoder {
             }
 
         } catch (Exception e) {
-            log.warn("Сломался на парсинге ошибки от {} в WarehouseClientErrorDecoder", methodKey, e);
+            log.warn("Сломался в WarehouseClientErrorDecoder, methodKey {}", methodKey, e);
         }
 
         return defaultDecoder.decode(methodKey, response);
@@ -74,7 +74,7 @@ public class WarehouseClientErrorDecoder implements ErrorDecoder {
                 }
             }
         } catch (IOException e) {
-            log.debug("Сломался в WarehouseClientErrorDecoder на парсинге объекта response", e);
+            log.warn("Сломался в WarehouseClientErrorDecoder на парсинге объекта response {}", response, e);
         }
         return null;
     }
