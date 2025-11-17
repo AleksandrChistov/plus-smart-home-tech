@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.api.shared.error.NotFoundException;
+import ru.yandex.practicum.api.shared.error.ProductNotFoundException;
 import ru.yandex.practicum.api.shopping.store.dto.*;
 import ru.yandex.practicum.api.shopping.store.enums.ProductCategory;
 import ru.yandex.practicum.api.shopping.store.enums.ProductState;
@@ -48,7 +48,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
         log.info("Получение товара по id = {}", productId);
         return productRepository.findById(productId)
                 .map(productMapper::toDto)
-                .orElseThrow(() -> new NotFoundException("Товар c id = " + productId +" не найден"));
+                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + productId +" не найден"));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     public ProductContentDto updateProduct(ProductContentDto productDto) {
         log.info("Обновление товара: {}", productDto);
         Product product = productRepository.findById(productDto.getProductId())
-                .orElseThrow(() -> new NotFoundException("Товар c id = " + productDto.getProductId() +" не найден"));
+                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + productDto.getProductId() +" не найден"));
         productMapper.updateModel(productDto, product);
         return productMapper.toDto(productRepository.save(product));
     }
@@ -74,7 +74,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     public boolean setProductQuantityState(SetProductQuantityStateRequestDto request) {
         log.info("Изменение кол-ва товара: {}", request);
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new NotFoundException("Товар c id = " + request.getProductId() +" не найден"));
+                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + request.getProductId() +" не найден"));
 
         product.setQuantityState(request.getQuantityState());
 
@@ -88,7 +88,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     public boolean removeProductFromStore(ProductRemoveRequestDto request) {
         log.info("Удаление товара c id = {}", request.getProductId());
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new NotFoundException("Товар c id = " + request.getProductId() +" не найден"));
+                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + request.getProductId() +" не найден"));
 
         product.setProductState(ProductState.DEACTIVATE);
 
