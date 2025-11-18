@@ -5,7 +5,7 @@ import feign.Feign;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.yandex.practicum.shoppingcart.error.WarehouseClientErrorDecoder;
+import ru.yandex.practicum.shoppingcart.client.warehouse.WarehouseClientErrorDecoder;
 
 @Configuration
 @RequiredArgsConstructor

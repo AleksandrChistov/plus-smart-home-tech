@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shoppingcart.error;
+package ru.yandex.practicum.shoppingcart.client.warehouse;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +12,7 @@ import ru.yandex.practicum.api.warehouse.error.InsufficientItemDto;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
 import ru.yandex.practicum.api.warehouse.error.ServiceUnavailableException;
+import ru.yandex.practicum.shoppingcart.error.ApiError;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

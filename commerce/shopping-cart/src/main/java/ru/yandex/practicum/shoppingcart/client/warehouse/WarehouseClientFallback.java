@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shoppingcart.service;
+package ru.yandex.practicum.shoppingcart.client.warehouse;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
