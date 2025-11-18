@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shoppingcart.service;
+package ru.yandex.practicum.shoppingcart.client.warehouse;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import ru.yandex.practicum.api.warehouse.service.WarehouseApi;
