@@ -9,11 +9,13 @@ import ru.yandex.practicum.api.order.dto.OrderDto;
 import ru.yandex.practicum.api.order.dto.OrderRequest;
 import ru.yandex.practicum.api.order.dto.ProductReturnRequest;
 
+import java.util.List;
+
 public interface OrderApi {
     String URL = "/api/v1/order";
 
     @GetMapping(path = URL, produces = MediaType.APPLICATION_JSON_VALUE)
-    OrderDto getOrderByUserName(@RequestParam @NotNull String username);
+    List<OrderDto> getOrdersByUserName(@RequestParam @NotNull String username);
 
     @PutMapping(path = URL, consumes = MediaType.APPLICATION_JSON_VALUE)
     OrderDto createNewOrder(@RequestBody @Valid CreateNewOrderRequest request);
