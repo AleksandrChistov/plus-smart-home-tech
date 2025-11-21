@@ -21,16 +21,16 @@ public class Payment {
     private String paymentId;
 
     @Column(name = "product_cost")
-    private BigDecimal product_cost;
+    private BigDecimal productCost;
 
     @Column(name = "delivery_cost")
-    private BigDecimal delivery_cost;
+    private BigDecimal deliveryCost;
 
     @Column(name = "tax_cost")
-    private BigDecimal tax_cost;
+    private BigDecimal taxCost;
 
     @Column(name = "total_cost")
-    private BigDecimal total_cost;
+    private BigDecimal totalCost;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
