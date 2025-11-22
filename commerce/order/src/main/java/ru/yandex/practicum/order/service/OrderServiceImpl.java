@@ -65,11 +65,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto payOrder(OrderRequest request) {
         // todo: Добавить Feign-клиент payment:
         //    - `payment` для **запуска** процесса **оплаты**.
+        // change status to PAID
         return null;
     }
 
     @Override
     public OrderDto payOrderFailed(OrderRequest request) {
+        // change status to PAYMENT_FAILED
         return null;
     }
 
