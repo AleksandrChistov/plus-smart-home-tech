@@ -11,7 +11,7 @@ import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.warehouse.error.InsufficientItemDto;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
-import ru.yandex.practicum.api.warehouse.error.ServiceUnavailableException;
+import ru.yandex.practicum.api.shared.error.ServiceUnavailableException;
 import ru.yandex.practicum.shoppingcart.error.ApiError;
 
 import java.io.IOException;
