@@ -29,6 +29,6 @@ public class ProductContentDto {
     ProductCategory productCategory;
     @NotNull(message = "Цена товара должна быть указана")
     @DecimalMin(value = "1.00", message = "Цена не может быть меньше 1 руб.")
-    @Digits(integer = 17, fraction = 2, message = "В цене поддерживается максимум 17 цифр и 2 после запятой")
+    @Digits(integer = 19, fraction = 2, message = "В цене поддерживается максимум 19 цифр и 2 после запятой")
     BigDecimal price;
 }
