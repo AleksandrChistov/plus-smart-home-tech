@@ -10,7 +10,7 @@ import ru.yandex.practicum.api.warehouse.dto.BookedProductsDto;
 import ru.yandex.practicum.api.warehouse.dto.NewProductInWarehouseRequest;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
-import ru.yandex.practicum.api.warehouse.error.ServiceUnavailableException;
+import ru.yandex.practicum.api.shared.error.ServiceUnavailableException;
 
 @Slf4j
 @Component

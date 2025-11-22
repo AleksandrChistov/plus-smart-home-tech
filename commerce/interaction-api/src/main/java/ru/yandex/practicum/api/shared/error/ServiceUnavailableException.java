@@ -1,4 +1,4 @@
-package ru.yandex.practicum.api.warehouse.error;
+package ru.yandex.practicum.api.shared.error;
 
 public class ServiceUnavailableException extends RuntimeException {
 
