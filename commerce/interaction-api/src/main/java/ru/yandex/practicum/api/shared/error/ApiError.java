@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shoppingcart.error;
+package ru.yandex.practicum.api.shared.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

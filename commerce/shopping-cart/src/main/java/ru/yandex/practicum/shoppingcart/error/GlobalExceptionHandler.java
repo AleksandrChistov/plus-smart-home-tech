@@ -9,9 +9,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import ru.yandex.practicum.api.shared.error.ApiError;
 import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
-import ru.yandex.practicum.api.warehouse.error.ServiceUnavailableException;
+import ru.yandex.practicum.api.shared.error.ServiceUnavailableException;
 
 import java.util.Optional;
 
