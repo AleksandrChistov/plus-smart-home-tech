@@ -16,11 +16,11 @@ public interface PaymentApi {
     @PostMapping(path = URL, consumes = MediaType.APPLICATION_JSON_VALUE)
     PaymentDto payment(@RequestBody @Valid OrderDto orderDto);
 
-    @PostMapping(path = URL + "/totalCost", consumes = MediaType.APPLICATION_JSON_VALUE)
-    BigDecimal calculateTotalCost(@RequestBody @Valid OrderDto orderDto);
-
     @PostMapping(path = URL + "/productCost", consumes = MediaType.APPLICATION_JSON_VALUE)
     BigDecimal calculateProductCost(@RequestBody @Valid OrderDto orderDto);
+
+    @PostMapping(path = URL + "/totalCost", consumes = MediaType.APPLICATION_JSON_VALUE)
+    BigDecimal calculateTotalCost(@RequestBody @Valid OrderDto orderDto);
 
     @PostMapping(path = URL + "/refund", consumes = MediaType.APPLICATION_JSON_VALUE)
     void refund(@RequestBody @Valid PaymentRequest request);

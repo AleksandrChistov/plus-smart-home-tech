@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.api.shared.error.ProductNotFoundException;
 import ru.yandex.practicum.api.shopping.store.dto.ProductContentDto;
 import ru.yandex.practicum.api.shopping.store.dto.ProductDto;
 import ru.yandex.practicum.api.shopping.store.dto.ProductRemoveRequestDto;
@@ -23,7 +24,7 @@ public interface ShoppingStoreApi {
     );
 
     @GetMapping(path = URL + "/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ProductContentDto getProductById(@PathVariable @NotBlank String productId);
+    ProductContentDto getProductById(@PathVariable @NotBlank String productId) throws ProductNotFoundException;
 
     @PutMapping(path = URL, consumes = MediaType.APPLICATION_JSON_VALUE)
     ProductContentDto createProduct(@RequestBody @Valid ProductContentDto productDto);
