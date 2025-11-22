@@ -7,12 +7,12 @@ import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
+import ru.yandex.practicum.api.shared.error.ApiError;
 import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.warehouse.error.InsufficientItemDto;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
 import ru.yandex.practicum.api.shared.error.ServiceUnavailableException;
-import ru.yandex.practicum.shoppingcart.error.ApiError;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
