@@ -30,7 +30,7 @@ public class OrderDto {
     Float deliveryWeight;
     Float deliveryVolume;
     Boolean fragile;
-    BigDecimal totalPrice;
-    BigDecimal deliveryPrice;
     BigDecimal productPrice;
+    BigDecimal deliveryPrice;
+    BigDecimal totalPrice;
 }

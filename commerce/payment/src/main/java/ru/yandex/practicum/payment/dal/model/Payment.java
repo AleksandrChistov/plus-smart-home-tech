@@ -20,6 +20,9 @@ public class Payment {
     @UuidGenerator
     private String paymentId;
 
+    @Column(name = "order_id", nullable = false, unique = true)
+    private String orderId;
+
     @Column(name = "product_cost")
     private BigDecimal productCost;
 
