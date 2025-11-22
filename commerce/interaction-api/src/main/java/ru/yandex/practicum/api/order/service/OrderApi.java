@@ -8,6 +8,7 @@ import ru.yandex.practicum.api.order.dto.CreateNewOrderRequest;
 import ru.yandex.practicum.api.order.dto.OrderDto;
 import ru.yandex.practicum.api.order.dto.OrderRequest;
 import ru.yandex.practicum.api.order.dto.ProductReturnRequest;
+import ru.yandex.practicum.api.shared.error.NotFoundException;
 
 import java.util.List;
 
@@ -33,10 +34,10 @@ public interface OrderApi {
     OrderDto assembleOrderFailed(@RequestBody @Valid OrderRequest request);
 
     @PostMapping(path = URL + "/payment", consumes = MediaType.APPLICATION_JSON_VALUE)
-    OrderDto payOrder(@RequestBody @Valid OrderRequest request);
+    OrderDto payOrder(@RequestBody @Valid OrderRequest request) throws NotFoundException;
 
     @PostMapping(path = URL + "/payment/failed", consumes = MediaType.APPLICATION_JSON_VALUE)
-    OrderDto payOrderFailed(@RequestBody @Valid OrderRequest request);
+    OrderDto payOrderFailed(@RequestBody @Valid OrderRequest request) throws NotFoundException;
 
     @PostMapping(path = URL + "/delivery", consumes = MediaType.APPLICATION_JSON_VALUE)
     OrderDto deliverOrder(@RequestBody @Valid OrderRequest request);
