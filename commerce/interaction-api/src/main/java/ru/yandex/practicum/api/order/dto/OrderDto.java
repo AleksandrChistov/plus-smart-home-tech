@@ -19,7 +19,6 @@ public class OrderDto {
     @NotBlank(message = "ID заказа не может быть пустым")
     String orderId;
     String shoppingCartId;
-    @NotNull(message = "Список товаров не может отсутствовать")
     @Builder.Default
     Map<String, Integer> products = new HashMap<>();
     String paymentId;
