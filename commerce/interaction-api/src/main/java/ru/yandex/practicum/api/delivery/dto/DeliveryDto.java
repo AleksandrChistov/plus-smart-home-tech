@@ -10,11 +10,12 @@ import ru.yandex.practicum.api.warehouse.dto.AddressDto;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class DeliveryDto {
-    @NotBlank(message = "ID доставки не может быть пустым")
     String deliveryId;
     @NotBlank(message = "ID заказа не может быть пустым")
     String orderId;
+    @Builder.Default
     DeliveryState deliveryState = DeliveryState.CREATED;
     @NotBlank(message = "Адрес отправки не может быть пустым")
     AddressDto fromAddress;

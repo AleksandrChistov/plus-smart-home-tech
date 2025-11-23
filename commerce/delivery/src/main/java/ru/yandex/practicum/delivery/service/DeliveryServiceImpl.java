@@ -1,6 +1,7 @@
 package ru.yandex.practicum.delivery.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.api.delivery.dto.DeliveryDto;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.api.order.dto.OrderDto;
 import ru.yandex.practicum.api.order.dto.OrderRequest;
 import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.warehouse.dto.AddressDto;
+import ru.yandex.practicum.api.warehouse.dto.ShippedToDeliveryRequest;
 import ru.yandex.practicum.delivery.client.order.OrderClient;
 import ru.yandex.practicum.delivery.client.warehouse.WarehouseClient;
 import ru.yandex.practicum.delivery.dal.dao.DeliveryRepository;
@@ -18,6 +20,7 @@ import ru.yandex.practicum.delivery.mapper.DeliveryMapper;
 
 import java.math.BigDecimal;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -40,6 +43,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public DeliveryDto create(DeliveryDto deliveryDto) {
+        log.info("Создание доставки, id = {}", deliveryDto.getDeliveryId());
         Delivery delivery = deliveryMapper.toModel(deliveryDto);
         Delivery savedDelivery = deliveryRepository.saveAndFlush(delivery);
         return deliveryMapper.toDto(savedDelivery);
@@ -77,6 +81,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     
     @Override
     public void picked(DeliveryRequest request) {
+        log.info("Эмуляция получения товара в доставку {}", request);
         Delivery delivery = getDeliveryById(request.getDeliveryId());
 
         delivery.setDeliveryState(DeliveryState.IN_PROGRESS);
@@ -85,14 +90,17 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         OrderRequest orderRequest = new OrderRequest(delivery.getOrderId());
 
-        // todo: uncomment when ready
-//        warehouseClient.shippedToDelivery(delivery);
+        ShippedToDeliveryRequest shippedToDeliveryRequest =
+                new ShippedToDeliveryRequest(delivery.getOrderId(), delivery.getDeliveryId());
+
+        warehouseClient.shipProducts(shippedToDeliveryRequest);
 
         orderClient.assembleOrder(orderRequest);
     }
 
     @Override
     public void successful(DeliveryRequest request) {
+        log.info("Эмуляция успешной доставки товара {}", request);
         Delivery delivery = getDeliveryById(request.getDeliveryId());
 
         delivery.setDeliveryState(DeliveryState.DELIVERED);
@@ -106,6 +114,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     
     @Override
     public void failed(DeliveryRequest request) {
+        log.info("Эмуляция неудачного вручения товара {}", request);
         Delivery delivery = getDeliveryById(request.getDeliveryId());
 
         delivery.setDeliveryState(DeliveryState.FAILED);
