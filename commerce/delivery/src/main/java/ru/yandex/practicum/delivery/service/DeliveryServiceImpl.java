@@ -19,6 +19,7 @@ import ru.yandex.practicum.delivery.dal.model.Delivery;
 import ru.yandex.practicum.delivery.mapper.DeliveryMapper;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Slf4j
 @Service
@@ -76,7 +77,7 @@ public class DeliveryServiceImpl implements DeliveryService {
             total = total.add(total.multiply(STREET_MULTIPLIER));
         }
 
-        return total;
+        return total.setScale(2, RoundingMode.HALF_UP);
     }
     
     @Override
