@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.api.order.dto.OrderDto;
 import ru.yandex.practicum.api.payment.dto.PaymentDto;
 import ru.yandex.practicum.api.payment.dto.PaymentRequest;
+import ru.yandex.practicum.api.shared.error.NotFoundException;
 
 import java.math.BigDecimal;
 
@@ -23,9 +24,9 @@ public interface PaymentApi {
     BigDecimal calculateTotalCost(@RequestBody @Valid OrderDto orderDto);
 
     @PostMapping(path = URL + "/refund", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void refund(@RequestBody @Valid PaymentRequest request);
+    void refund(@RequestBody @Valid PaymentRequest request) throws NotFoundException;
 
     @PostMapping(path = URL + "/failed", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void failed(@RequestBody @Valid PaymentRequest request);
+    void failed(@RequestBody @Valid PaymentRequest request) throws NotFoundException;
 
 }

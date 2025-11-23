@@ -1,6 +1,7 @@
 package ru.yandex.practicum.payment.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.api.order.dto.OrderDto;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -35,10 +37,11 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentDto payment(OrderDto orderDto) {
+        log.info("Запуск процесса оплаты заказа {}", orderDto);
+
         BigDecimal tax = getTax(orderDto.getTotalPrice());
 
         Payment payment = paymentMapper.toModel(orderDto, tax);
-        payment.setStatus(PaymentStatus.PENDING);
 
         payment = paymentRepository.save(payment);
 
@@ -47,6 +50,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public BigDecimal calculateProductCost(OrderDto orderDto) {
+        log.info("Вычисление стоимости товаров в заказе {}", orderDto);
+
         BigDecimal totalProductCost = BigDecimal.ZERO;
         
         for (Map.Entry<String, Integer> product : orderDto.getProducts().entrySet()) {
@@ -62,6 +67,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public BigDecimal calculateTotalCost(OrderDto orderDto) {
+        log.info("Вычисление общей стоимости заказа {}", orderDto);
+
         BigDecimal tax = getTax(orderDto.getProductPrice());
 
         return orderDto.getProductPrice()
@@ -76,7 +83,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void refund(PaymentRequest request) {
+    public void refund(PaymentRequest request) throws NotFoundException {
+        log.info("Эмуляция успешной оплаты платежного шлюза {}", request);
         Payment payment = getOrElseThrow(request.getPaymentId());
 
         payment.setStatus(PaymentStatus.SUCCESS);
@@ -87,7 +95,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void failed(PaymentRequest request) {
+    public void failed(PaymentRequest request) throws NotFoundException {
+        log.info("Эмуляция отказа в оплате платежного шлюза {}", request);
         Payment payment = getOrElseThrow(request.getPaymentId());
 
         payment.setStatus(PaymentStatus.FAILED);
