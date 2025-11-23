@@ -176,13 +176,6 @@ public class WarehouseProductServiceImpl implements WarehouseProductService {
             return new WarehouseStock(s.getProductId(), quantity);
         }).toList();
 
-        List<String> endedProducts = changedStocks.stream()
-                .filter(s -> s.getQuantity() == 0)
-                .map(WarehouseStock::getProductId)
-                .toList();
-
-        warehouseOrderRepository.deleteAllByProductIdIn(endedProducts);
-
         warehouseStockRepository.saveAll(changedStocks);
     }
 
