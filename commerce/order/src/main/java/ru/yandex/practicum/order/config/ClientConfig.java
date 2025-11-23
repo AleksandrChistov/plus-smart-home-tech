@@ -19,18 +19,6 @@ public class ClientConfig {
                 .errorDecoder(new ClientErrorDecoder(objectMapper));
     }
 
-    @Bean
-    public Feign.Builder feignWarehouseBuilder() {
-        return Feign.builder()
-                .errorDecoder(new ClientErrorDecoder(objectMapper));
-    }
-
-    @Bean
-    public Feign.Builder feignPaymentBuilder() {
-        return Feign.builder()
-                .errorDecoder(new ClientErrorDecoder(objectMapper));
-    }
-
 }
 
 

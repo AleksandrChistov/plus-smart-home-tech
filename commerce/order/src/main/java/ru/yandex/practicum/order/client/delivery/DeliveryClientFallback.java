@@ -1,4 +1,4 @@
-package ru.yandex.practicum.order.client.order;
+package ru.yandex.practicum.order.client.delivery;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
