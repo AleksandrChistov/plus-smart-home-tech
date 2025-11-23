@@ -21,6 +21,16 @@ CREATE TABLE IF NOT EXISTS order_products (
     PRIMARY KEY (order_id, product_id)
 );
 
+CREATE TABLE IF NOT EXISTS order_delivery_address (
+    order_id VARCHAR(36) PRIMARY KEY,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    country VARCHAR(100),
+    city VARCHAR(100),
+    street VARCHAR(200),
+    house VARCHAR(50),
+    flat VARCHAR(50)
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_orders_username ON orders(username);
 CREATE INDEX IF NOT EXISTS idx_order_products_order_id ON order_products(order_id);

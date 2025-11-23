@@ -16,6 +16,7 @@ import java.util.Map;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Order {
     @Id
     @Column(name = "order_id")
@@ -36,7 +37,8 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false)
-    private OrderState state;
+    @Builder.Default
+    private OrderState state = OrderState.NEW;
 
     @Column(name = "delivery_weight")
     private Float deliveryWeight;
@@ -64,5 +66,6 @@ public class Order {
     )
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")
+    @Builder.Default
     private Map<String, Integer> products = new HashMap<>();
 }
