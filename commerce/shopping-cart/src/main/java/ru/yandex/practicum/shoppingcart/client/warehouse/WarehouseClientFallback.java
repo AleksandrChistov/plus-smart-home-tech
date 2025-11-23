@@ -4,13 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.shopping.cart.dto.ShoppingCartDto;
-import ru.yandex.practicum.api.warehouse.dto.AddProductToWarehouseRequest;
-import ru.yandex.practicum.api.warehouse.dto.AddressDto;
-import ru.yandex.practicum.api.warehouse.dto.BookedProductsDto;
-import ru.yandex.practicum.api.warehouse.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.api.warehouse.dto.*;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
 import ru.yandex.practicum.api.shared.error.ServiceUnavailableException;
+
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -34,8 +33,32 @@ public class WarehouseClientFallback implements WarehouseClient {
     }
 
     @Override
+    public BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request) throws InsufficientStockError {
+        log.error("Ошибка при сборке продуктов для заказа. Используем фолбэк.");
+
+        // Возвращаем заглушку с параметрами по умолчанию
+        return BookedProductsDto.builder()
+                .deliveryWeight(0.0f)
+                .deliveryVolume(0.0f)
+                .fragile(false)
+                .build();
+    }
+
+    @Override
+    public void shipProducts(ShippedToDeliveryRequest request) throws NotFoundException {
+        log.error("Товары не были отправлены на доставку {}", request);
+        throw new ServiceUnavailableException("WarehouseClient временно недоступен. Попробуйте позже.");
+    }
+
+    @Override
     public void addQuantity(AddProductToWarehouseRequest addProductRequest) throws NotFoundException {
         log.error("Товар {} в кол-ве {} НЕ был добавлен на склад", addProductRequest.getProductId(), addProductRequest.getQuantity());
+        throw new ServiceUnavailableException("WarehouseClient временно недоступен. Попробуйте позже.");
+    }
+
+    @Override
+    public void returnProducts(Map<String, Integer> products) {
+        log.error("Товары {} не были возвращены на склад", products);
         throw new ServiceUnavailableException("WarehouseClient временно недоступен. Попробуйте позже.");
     }
 
