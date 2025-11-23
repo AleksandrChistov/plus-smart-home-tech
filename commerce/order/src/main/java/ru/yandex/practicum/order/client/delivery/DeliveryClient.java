@@ -1,4 +1,4 @@
-package ru.yandex.practicum.order.client.order;
+package ru.yandex.practicum.order.client.delivery;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import ru.yandex.practicum.api.delivery.service.DeliveryApi;

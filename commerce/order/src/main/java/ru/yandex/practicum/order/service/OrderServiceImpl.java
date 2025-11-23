@@ -15,7 +15,7 @@ import ru.yandex.practicum.api.shopping.cart.dto.ShoppingCartDto;
 import ru.yandex.practicum.api.warehouse.dto.AddressDto;
 import ru.yandex.practicum.api.warehouse.dto.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.api.warehouse.dto.BookedProductsDto;
-import ru.yandex.practicum.order.client.order.DeliveryClient;
+import ru.yandex.practicum.order.client.delivery.DeliveryClient;
 import ru.yandex.practicum.order.client.payment.PaymentClient;
 import ru.yandex.practicum.order.client.warehouse.WarehouseClient;
 import ru.yandex.practicum.order.dal.dao.OrderDeliveryAddressRepository;
