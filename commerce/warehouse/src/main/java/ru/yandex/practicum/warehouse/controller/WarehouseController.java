@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.shopping.cart.dto.ShoppingCartDto;
-import ru.yandex.practicum.api.warehouse.dto.AddProductToWarehouseRequest;
-import ru.yandex.practicum.api.warehouse.dto.AddressDto;
-import ru.yandex.practicum.api.warehouse.dto.BookedProductsDto;
-import ru.yandex.practicum.api.warehouse.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.api.warehouse.dto.*;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
 import ru.yandex.practicum.api.warehouse.service.WarehouseApi;
 import ru.yandex.practicum.warehouse.service.WarehouseProductService;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,8 +29,23 @@ public class WarehouseController implements WarehouseApi {
     }
 
     @Override
+    public BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request) throws InsufficientStockError {
+        return warehouseProductService.assemblyProducts(request);
+    }
+
+    @Override
+    public void shipProducts(ShippedToDeliveryRequest request) {
+        warehouseProductService.shipProducts(request);
+    }
+
+    @Override
     public void addQuantity(AddProductToWarehouseRequest addProductRequest) throws NotFoundException {
         warehouseProductService.addQuantity(addProductRequest);
+    }
+
+    @Override
+    public void returnProducts(Map<String, Integer> products) {
+        warehouseProductService.returnProducts(products);
     }
 
     @Override

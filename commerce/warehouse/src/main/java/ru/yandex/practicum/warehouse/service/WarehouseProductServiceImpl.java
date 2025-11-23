@@ -6,15 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.api.shared.error.NotFoundException;
 import ru.yandex.practicum.api.shopping.cart.dto.ShoppingCartDto;
-import ru.yandex.practicum.api.warehouse.dto.AddProductToWarehouseRequest;
-import ru.yandex.practicum.api.warehouse.dto.AddressDto;
-import ru.yandex.practicum.api.warehouse.dto.BookedProductsDto;
-import ru.yandex.practicum.api.warehouse.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.api.warehouse.dto.*;
 import ru.yandex.practicum.api.warehouse.error.InsufficientItemDto;
 import ru.yandex.practicum.api.warehouse.error.InsufficientStockError;
 import ru.yandex.practicum.api.warehouse.error.ProductAlreadyExistError;
+import ru.yandex.practicum.warehouse.dal.dao.WarehouseOrderRepository;
 import ru.yandex.practicum.warehouse.dal.dao.WarehouseProductRepository;
 import ru.yandex.practicum.warehouse.dal.dao.WarehouseStockRepository;
+import ru.yandex.practicum.warehouse.dal.model.WarehouseOrder;
 import ru.yandex.practicum.warehouse.dal.model.WarehouseProduct;
 import ru.yandex.practicum.warehouse.dal.model.WarehouseStock;
 import ru.yandex.practicum.warehouse.mapper.WarehouseProductMapper;
@@ -39,6 +38,8 @@ public class WarehouseProductServiceImpl implements WarehouseProductService {
     private final WarehouseProductRepository warehouseProductRepository;
 
     private final WarehouseStockRepository warehouseStockRepository;
+
+    private final WarehouseOrderRepository warehouseOrderRepository;
 
     private final WarehouseProductMapper warehouseProductMapper;
 
@@ -69,6 +70,38 @@ public class WarehouseProductServiceImpl implements WarehouseProductService {
 
         List<WarehouseProduct> products = warehouseProductRepository.findAllWithStock(requestProducts.keySet());
 
+        return checkAndBook(requestProducts, products);
+    }
+
+    @Override
+    public BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request) throws InsufficientStockError {
+        log.info("Сборка товаров для заказа на складе {}", request);
+        Map<String, Integer> requestProducts = request.getProducts();
+        List<WarehouseProduct> dbProducts = warehouseProductRepository.findAllWithStock(requestProducts.keySet());
+
+        BookedProductsDto bookedProductsDto = checkAndBook(requestProducts, dbProducts);
+
+        log.info("Товар был проверен, изменяем кол-во на складе {}", request);
+
+        warehouseStockRepository.saveAll(dbProducts.stream().map(p -> {
+            int quantity = p.getQuantity() - requestProducts.get(p.getProductId());
+            return new WarehouseStock(p.getProductId(), quantity);
+        }).toList());
+
+
+        WarehouseOrder warehouseOrder = WarehouseOrder.builder()
+                .orderId(request.getOrderId())
+                .productIds(requestProducts.keySet())
+                .build();
+
+        log.info("Сохраняем заказ на складе {}", warehouseOrder);
+
+        warehouseOrderRepository.save(warehouseOrder);
+
+        return bookedProductsDto;
+    }
+
+    private BookedProductsDto checkAndBook(Map<String, Integer> requestProducts, List<WarehouseProduct> products) throws InsufficientStockError {
         if (requestProducts.size() != products.size()) {
             throw new NotFoundException("Товар не найден на складе, проверьте ID товаров " + requestProducts.keySet());
         }
@@ -108,6 +141,17 @@ public class WarehouseProductServiceImpl implements WarehouseProductService {
     }
 
     @Override
+    public void shipProducts(ShippedToDeliveryRequest request) throws NotFoundException {
+        log.info("Отправка товаров к заказу = {} на доставку {}", request.getOrderId(), request.getDeliveryId());
+        WarehouseOrder warehouseOrder = warehouseOrderRepository.findByOrderId(request.getOrderId())
+                .orElseThrow(() -> new NotFoundException("Заказ не найден, id = " + request.getOrderId()));
+
+        warehouseOrder.setDeliveryId(request.getDeliveryId());
+
+        warehouseOrderRepository.save(warehouseOrder);
+    }
+
+    @Override
     public void addQuantity(AddProductToWarehouseRequest addProductRequest) throws NotFoundException {
         log.info("Новое кол-во товара для обновления {} = {}", addProductRequest.getProductId(), addProductRequest.getQuantity());
 
@@ -122,8 +166,30 @@ public class WarehouseProductServiceImpl implements WarehouseProductService {
     }
 
     @Override
+    public void returnProducts(Map<String, Integer> products) {
+        log.info("Возврат товаров: {}", products);
+
+        List<WarehouseStock> dbStocks = warehouseStockRepository.findAllByProductIdIn(products.keySet());
+
+        List<WarehouseStock> changedStocks = dbStocks.stream().map(s -> {
+            int quantity = s.getQuantity() + products.get(s.getProductId());
+            return new WarehouseStock(s.getProductId(), quantity);
+        }).toList();
+
+        List<String> endedProducts = changedStocks.stream()
+                .filter(s -> s.getQuantity() == 0)
+                .map(WarehouseStock::getProductId)
+                .toList();
+
+        warehouseOrderRepository.deleteAllByProductIdIn(endedProducts);
+
+        warehouseStockRepository.saveAll(changedStocks);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public AddressDto getWarehouseAddress() {
+        log.info("Получение адреса склада");
         return AddressDto.builder()
                 .country(CURRENT_ADDRESS)
                 .city(CURRENT_ADDRESS)
