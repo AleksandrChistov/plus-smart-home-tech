@@ -22,20 +22,3 @@ eureka:
     hostname: localhost
     instance-id: ${spring.application.name}:${random.value}
     leaseRenewalIntervalInSeconds: 10
-
-feign:
-  circuitbreaker:
-    enabled: true
-    implementation: resilience4j
-
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        slidingWindowSize: 10
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10000 # 10 секунд
-        permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowType: COUNT_BASED
-        minimumNumberOfCalls: 5
-        automaticTransitionFromOpenToHalfOpenEnabled: true
