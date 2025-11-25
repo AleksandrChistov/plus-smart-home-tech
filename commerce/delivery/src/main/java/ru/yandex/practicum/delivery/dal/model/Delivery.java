@@ -24,6 +24,7 @@ public class Delivery {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "delivery_state", nullable = false)
+    @Builder.Default
     private DeliveryState deliveryState = DeliveryState.CREATED;
 
     @Column(name = "from_country")
