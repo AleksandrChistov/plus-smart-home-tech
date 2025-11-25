@@ -51,6 +51,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
     
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculateTotal(OrderDto orderDto) {
         Delivery delivery = deliveryRepository.findByOrderId(orderDto.getOrderId())
                 .orElseThrow(() -> new NotFoundException("Доставка для заказа с id = " + orderDto.getOrderId() + " не найдена"));

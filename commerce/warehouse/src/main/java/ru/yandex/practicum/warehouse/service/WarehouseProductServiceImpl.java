@@ -63,6 +63,7 @@ public class WarehouseProductServiceImpl implements WarehouseProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookedProductsDto checkProducts(ShoppingCartDto request) throws InsufficientStockError {
         log.info("Проверка товаров на складе {}", request);
 
