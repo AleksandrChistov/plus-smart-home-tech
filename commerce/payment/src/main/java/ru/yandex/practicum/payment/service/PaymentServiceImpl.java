@@ -49,6 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculateProductCost(OrderDto orderDto) {
         log.info("Вычисление стоимости товаров в заказе {}", orderDto);
 
@@ -66,6 +67,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculateTotalCost(OrderDto orderDto) {
         log.info("Вычисление общей стоимости заказа {}", orderDto);
 

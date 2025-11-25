@@ -47,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderDto> getOrdersByUsername(String username) {
         return orderMapper.toDtoList(orderRepository.findByUsername(username));
     }

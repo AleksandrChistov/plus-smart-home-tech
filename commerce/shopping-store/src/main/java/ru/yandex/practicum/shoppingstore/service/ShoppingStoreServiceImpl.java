@@ -52,7 +52,6 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    @Transactional
     public ProductContentDto createProduct(ProductContentDto productDto) {
         log.info("Создание товара: {}", productDto);
         Product saved = productRepository.save(productMapper.toModel(productDto));
@@ -60,7 +59,6 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    @Transactional
     public ProductContentDto updateProduct(ProductContentDto productDto) {
         log.info("Обновление товара: {}", productDto);
         Product product = productRepository.findById(productDto.getProductId())
@@ -70,7 +68,6 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    @Transactional
     public boolean setProductQuantityState(SetProductQuantityStateRequestDto request) {
         log.info("Изменение кол-ва товара: {}", request);
         Product product = productRepository.findById(request.getProductId())
@@ -84,7 +81,6 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    @Transactional
     public boolean removeProductFromStore(ProductRemoveRequestDto request) {
         log.info("Удаление товара c id = {}", request.getProductId());
         Product product = productRepository.findById(request.getProductId())

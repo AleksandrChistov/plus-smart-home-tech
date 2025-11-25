@@ -1,6 +1,5 @@
 package ru.yandex.practicum.shoppingcart.service;
 
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final WarehouseClient warehouseClient;
     
     @Override
-    public @Nullable ShoppingCartDto getShoppingCartByUserName(String username) {
+    public ShoppingCartDto getShoppingCartByUserName(String username) {
         log.info("Получение корзины пользователя {}", username);
         return shoppingCartRepository.findByUsername(username)
                 .map(shoppingCartMapper::toDto)
