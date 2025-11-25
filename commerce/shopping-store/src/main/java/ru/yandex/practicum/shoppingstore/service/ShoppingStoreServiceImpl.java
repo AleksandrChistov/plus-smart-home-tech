@@ -2,6 +2,9 @@ package ru.yandex.practicum.shoppingstore.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@CacheConfig(cacheNames = "products")
 public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     private final ProductRepository productRepository;
@@ -26,6 +30,10 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     private final ProductMapper productMapper;
 
     @Override
+    @Cacheable(
+            key = "{#category, #pageable.pageNumber, #pageable.pageSize, #pageable.sort.toString()}",
+            unless = "#result.getContent().size() < 10"
+    )
     @Transactional(readOnly = true)
     public ProductDto getProductsByCategory(ProductCategory category, Pageable pageable) {
         log.info("Получение товаров по категории {} страницы {} и сортировкой {}",
@@ -43,35 +51,46 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
+    @Cacheable(
+            key = "#productId",
+            unless = "#result == null"
+    )
     @Transactional(readOnly = true)
     public ProductContentDto getProductById(String productId) {
         log.info("Получение товара по id = {}", productId);
         return productRepository.findById(productId)
                 .map(productMapper::toDto)
-                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + productId +" не найден"));
+                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + productId + " не найден"));
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     public ProductContentDto createProduct(ProductContentDto productDto) {
         log.info("Создание товара: {}", productDto);
+
         Product saved = productRepository.save(productMapper.toModel(productDto));
+
         return productMapper.toDto(saved);
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     public ProductContentDto updateProduct(ProductContentDto productDto) {
         log.info("Обновление товара: {}", productDto);
-        Product product = productRepository.findById(productDto.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + productDto.getProductId() +" не найден"));
+
+        Product product = getOrElseThrow(productDto.getProductId());
+
         productMapper.updateModel(productDto, product);
+
         return productMapper.toDto(productRepository.save(product));
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     public boolean setProductQuantityState(SetProductQuantityStateRequestDto request) {
         log.info("Изменение кол-ва товара: {}", request);
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + request.getProductId() +" не найден"));
+
+        Product product = getOrElseThrow(request.getProductId());
 
         product.setQuantityState(request.getQuantityState());
 
@@ -81,15 +100,21 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     public boolean removeProductFromStore(ProductRemoveRequestDto request) {
         log.info("Удаление товара c id = {}", request.getProductId());
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + request.getProductId() +" не найден"));
+
+        Product product = getOrElseThrow(request.getProductId());
 
         product.setProductState(ProductState.DEACTIVATE);
 
         productRepository.save(product);
 
         return true;
+    }
+
+    private Product getOrElseThrow(String productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Товар c id = " + productId + " не найден"));
     }
 }
